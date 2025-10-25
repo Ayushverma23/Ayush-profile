@@ -1,0 +1,247 @@
+1 — Global / Site-wide Design & Behaviour
+
+Mood & Theme
+
+Dark, galaxy palette: deep indigo/near-black background, subtle purple/blue gradients, neon accent (cyan / magenta) for glows.
+
+Subtle starfield + parallax layers: 3 layers (foreground small particles, midstars, distant faint stars) with different motion speeds to create depth.
+
+Typography: modern geometric sans (e.g., Inter / Poppins). Main title small and elegant; section headings slightly larger with tracking.
+
+Motion language: smooth easings (cubic-bezier(0.22, 1, 0.36, 1) or easeOutQuart), moderate durations 400–1200ms for elements, longer continuous loops for orbits/rotations.
+
+Performance-first constraints
+
+Use GPU-accelerated animations (WebGL via React Three Fiber) for planets/orbits; use CSS/Framer Motion for UI panels and simple fades.
+
+Always provide a reduced-motion alternative when prefers-reduced-motion is set.
+
+Lazy-load heavy 3D assets and fallback to 2D canvas or CSS animation on low-end devices.
+
+Use LOD (levels of detail) and instanced meshes for repeating objects (stars, small asteroids).
+
+Interaction patterns
+
+Mouse hover: subtle parallax of scene based on cursor coordinates (max 8–12px translate), planet highlights, and tooltip cards.
+
+Click/tap: focus / modal open (project detail, education detail).
+
+Smooth scroll between sections; snap or subtle section transitions (no jarring jumps).
+
+2 — Landing Page (Solar System Scene)
+
+Visuals
+
+Full-screen 3D solar system scene that fills viewport. A subtle vignette and starfield behind everything.
+
+Center overlay text (small): “Explore the Portfolio of Ayush Verma” — animated glow/pulse, slightly orbiting / bobbing to match scene motion.
+
+Sun: central luminous sphere with emissive material and animated corona shader (bloom). Slightly larger than planets and softly pulsing.
+
+Planets: orbiting spheres with different sizes, textures or procedural materials, different rotation speeds and orbit radii. Include subtle axial tilt.
+
+Orbit lines: faint glowing rings or particle trails to indicate orbit paths; drawn as thin lines or low-poly torus with glow post-processing.
+
+Ambient particle / comet: occasional slow-moving shooting star / comet that crosses scene.
+
+Animation specifics
+
+Use React Three Fiber + drei helpers. Use useFrame to advance orbital angles and rotations.
+
+Orbit motion: update position by angle = angle + speed * delta; position = center + radius * [cos(angle), 0, sin(angle)].
+
+Planet rotation on own axis: constant spin speed.
+
+Subtle scaling / bobbing: small sin-based vertical offset for lively motion.
+
+Postprocessing: bloom, vignette, and subtle chromatic aberration. Use @react-three/postprocessing.
+
+Center text behavior
+
+The center overlay is a translucent card with glassmorphism (backdrop-filter blur). Text pulses brightness in sync with sun (phase offset). On hover show subtle expand animation.
+
+Accessibility/fallback
+
+On devices that do not support WebGL or when battery saver is on, show a high-quality CSS/Canvas static visual: stylized SVG of planets that gently animate with CSS transforms.
+
+3 — About Section (Fully animated modern panel)
+
+Narrative & Layout
+
+Hero-like intro block with animated portrait / avatar (can be stylized silhouette or 3D low-poly model).
+
+Left: floating 3D card or holographic panel with short bio lines. Right: interactive timeline or particle cloud showing core strengths.
+
+Animations & Effects
+
+Holographic panels: animated glass panels that rotate slightly on mouse movement; content (text) fades/slide-in via Framer Motion.
+
+Particle trail: when user hovers over keywords, a small particle burst trails toward the keyword (use lightweight canvas particle emitter).
+
+Floating icons for tools (React, Three.js, Tailwind, Python etc.) orbiting a central badge — click an icon to show quick skill tooltip.
+
+Background micro-interactions: subtle micro-animations when section enters viewport—text lines reveal with staggered vertical motion.
+
+Content to include
+
+Short pitch statement (1–2 sentences).
+
+Key highlights: role, year of experience, top stack (3–4 bullet icons).
+
+CTA: button to jump to Projects or Contact with micro bounce.
+
+Implementation notes
+
+Use Framer Motion for entrance/micro-animations (variants & staggered children).
+
+For the floating 3D avatar: either use a low-poly GLTF model or an illustrated SVG with subtle transform and shadow.
+
+4 — Education Section (Orbiting milestone timeline)
+
+Concept
+
+Each educational milestone is a node depicted as a small “planet/star” on a circular or elliptical orbit. Or a stacked orbital “rings” timeline where year nodes rotate into view.
+
+Visual Implementation
+
+Visual: concentric rings (or single orbital path) where each milestone is a glowing orb on the ring. Orbs have small label tags that appear on hover.
+
+When the user scrolls into the section, rings animate in from behind (scale/opacity), then orbs glide to their positions with easing.
+
+Clicking an orb opens a modal panel that slides up with details: institution, degree, highlights, proof (certificates / links).
+
+Interactions
+
+Hover: highlight orb, show year, show one-line summary.
+
+Scroll-synced animation: parallax where orb layers move at different speeds.
+
+Keyboard accessibility: allow focusable orb elements (tab -> Enter to open details).
+
+Content
+
+For each milestone: institution name, degree/diploma, year, notable modules/projects, small certificate thumbnail (optional).
+
+Implementation notes
+
+Keep each milestone as an accessible button with aria-labelledby and aria-describedby. Modal must be keyboard-trap accessible.
+
+5 — Projects Section (Tree with growing branches)
+
+Concept
+
+A procedural animated “project tree”: trunk labeled “Projects”, branches grow dynamically and each branch ends in a glowing orb (project node). As branches grow, leaves or small planets appear representing sub-features.
+
+Visual Implementation
+
+Use either 2D canvas (for stylized tree) or simple 3D low-poly scene with a trunk mesh and bezier-curved branches appearing via animated stroke.
+
+Branch growth animation: animate stroke-dashoffset to simulate growth; use easing and delay to grow branches sequentially.
+
+Node visuals: glowing orbs / panels at the tips. On hover, orb expands into a card showing project summary, tech stack, screenshots, and action buttons (Live / Code / Case Study).
+
+Secondary animation: leaves / tiny satellites that gently rotate or twinkle.
+
+Interaction patterns
+
+Hover: nodes pop with scale + shadow; show quick tags for major techs.
+
+Click: open project detail drawer (slide-in from right) containing:
+
+Project name, role, short description (2-3 lines).
+
+Tech stack chips (clickable to jump to skills).
+
+Animated GIF or short auto-play muted video preview (lazy-loaded).
+
+Link buttons: Live Demo, GitHub, Detailed Case Study PDF.
+
+Filter / search: allow filtering projects by tech or category (visual filter toggles animate the tree to hide/unhide branches).
+
+Content structure for each project (what to include)
+
+Name, one-sentence summary, features list (3 bullets), responsibilities, tech stack, screenshot(s), repo link, live demo link, short demo video (optional), tags.
+
+Implementation notes
+
+Render project previews as lazy-loaded images/videos. Use IntersectionObserver to start animations when in viewport.
+
+If using Three.js for branches, build geometry procedurally using curved tubes; otherwise use SVG paths for crisp 2D growth.
+
+6 — Skills Section (Planets moving into a black hole)
+
+Concept
+
+Skills are planets orbiting a central “black hole” UI metaphor. When a planet gets close to the black hole, a large tooltip appears with deeper skill details and examples.
+
+Visual Implementation
+
+Central blackhole: dark sphere with subtle inward-spiraling particles and displacement shader that generates the “accretion disk” effect.
+
+Planets (skill nodes): each planet has a distinct color and label; size corresponds to proficiency (bigger = stronger).
+
+Orbit paths: elliptical orbits with varying eccentricity and period.
+
+Interaction:
+
+Hover: planet glows and pops, shows quick percentage bar around planet.
+
+Click: planet moves along an easing curve closer to blackhole and docks at a focused panel slot where expanded content shows: proficiency level, years used, projects that used the skill, code examples, certifications.
+
+Drag: optionally allow drag to rearrange planets (desktop only).
+
+Animation specifics
+
+Use useFrame to update positions; for smooth docking movement, use tweening (e.g., gsap.to or Framer Motion value).
+
+When planet enters “influence radius” of black hole, apply visual distortion and particle trail.
+
+Provide a “skill radar” mini-visual (radial chart) in the expanded panel.
+
+Content per skill
+
+Skill name, level (e.g., Advanced / Pro / 4/5), short line about usage context, links to demo projects.
+
+Accessibility
+
+Each skill planet must be focusable and keyboard-operable. Provide textual fallback (a simple list) for screen readers.
+
+7 — Contact Me Section (Attractive, interactive)
+
+Concept & Visuals
+
+Futuristic contact area with a shooting star / comet trail that visually guides the eye to the contact form.
+
+Background light gradient that subtly pulses; form floats on a glass card with animated neon borders and subtle particle glow.
+
+Form fields
+
+Name, Email, Subject, Message, optional dropdown (reason).
+
+Animated placeholders that morph into labels on focus; input focus has soft glow and upward micro-translation.
+
+Micro-interactions
+
+When user focuses on inputs, small star/particle trails appear near the cursor.
+
+Submit button animates to shooting-star motion on click and shows success tick animation.
+
+Social icons (GitHub, LinkedIn, Mail) are animated and slightly orbit the form on hover.
+
+Back-end & Validations
+
+Client-side: required field validation, email format, message length checks; show inline accessible error messages.
+
+Server-side / submission:
+
+Option A (no custom backend): use form services (Formspree, Getform, or Netlify Forms) with reCAPTCHA v3.
+
+Option B (custom): serverless endpoint (Vercel/Netlify functions) that sends mail via SendGrid/Mailgun or saves to Airtable/Google Sheets.
+
+Provide success state (animated modal) and failure state with retry.
+
+Security
+
+Rate-limit submissions server-side; verify and sanitize inputs to avoid injection and spam.
+
+Use CAPTCHA or honeypot field to reduce spam.
