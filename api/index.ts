@@ -2,7 +2,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import express from "express";
 import { registerRoutes } from "../server/routes";
-import { serveStatic } from "../server/vite";
 
 // Create Express app instance
 const app = express();
@@ -15,22 +14,52 @@ let appInitialized = false;
 async function initializeApp() {
   if (appInitialized) return;
   
-  const server = await registerRoutes(app);
-  serveStatic(app);
-  appInitialized = true;
+  try {
+    const server = await registerRoutes(app);
+    appInitialized = true;
+  } catch (error) {
+    console.error("Failed to initialize app:", error);
+    throw error;
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  await initializeApp();
-  
-  // Convert Vercel request/response to Express format
-  return new Promise<void>((resolve) => {
-    app(req as any, res as any, () => {
-      if (!res.headersSent) {
-        res.status(404).json({ message: "Not found" });
-      }
-      resolve();
+  try {
+    await initializeApp();
+    
+    // Convert Vercel request/response to Express format
+    return new Promise<void>((resolve, reject) => {
+      // Add error handler
+      const errorHandler = (err: any) => {
+        console.error("Express error:", err);
+        if (!res.headersSent) {
+          res.status(500).json({ 
+            message: "Internal server error",
+            error: process.env.NODE_ENV === "development" ? err.message : undefined
+          });
+        }
+        resolve();
+      };
+      
+      app(req as any, res as any, (err?: any) => {
+        if (err) {
+          errorHandler(err);
+          return;
+        }
+        if (!res.headersSent) {
+          res.status(404).json({ message: "Not found" });
+        }
+        resolve();
+      });
     });
-  });
+  } catch (error) {
+    console.error("Handler error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: process.env.NODE_ENV === "development" ? (error as Error).message : undefined
+      });
+    }
+  }
 }
 

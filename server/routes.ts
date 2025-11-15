@@ -149,6 +149,7 @@ Timestamp: ${new Date().toLocaleString()}
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Support both /api/contact (for serverless) and /contact (for local dev)
   app.post("/api/contact", async (req, res) => {
     try {
       const identifier = req.ip || "unknown";
@@ -193,6 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Support both /api/contact/submissions (for serverless) and /contact/submissions (for local dev)
   app.get("/api/contact/submissions", async (req, res) => {
     const submissions = contactStorage.getSubmissions();
     res.json({
