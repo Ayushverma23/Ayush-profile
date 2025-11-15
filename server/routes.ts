@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import { Resend } from "resend";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -67,20 +68,84 @@ class ContactStorage {
 
 const contactStorage = new ContactStorage();
 
+// Initialize Resend client
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
+
 async function sendEmail(data: {
   name: string;
   email: string;
   subject: string;
   message: string;
 }): Promise<{ success: boolean; error?: string }> {
-  console.log("\n=== EMAIL NOTIFICATION ===");
-  console.log("From:", data.name, `<${data.email}>`);
-  console.log("Subject:", data.subject);
-  console.log("Message:", data.message);
-  console.log("Timestamp:", new Date().toISOString());
-  console.log("========================\n");
+  // Get recipient email from environment variable, or use a default
+  const recipientEmail = process.env.CONTACT_EMAIL || "your-email@example.com";
 
-  return { success: true };
+  // If Resend is not configured, log to console (for development)
+  if (!resend || !process.env.RESEND_API_KEY) {
+    console.log("\n=== EMAIL NOTIFICATION (Resend not configured) ===");
+    console.log("To:", recipientEmail);
+    console.log("From:", data.name, `<${data.email}>`);
+    console.log("Subject:", data.subject);
+    console.log("Message:", data.message);
+    console.log("Timestamp:", new Date().toISOString());
+    console.log("========================\n");
+    console.log("⚠️  To enable email sending, set RESEND_API_KEY in your .env file");
+    return { success: true };
+  }
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>", // You'll need to verify your domain for custom "from" address
+      to: [recipientEmail],
+      replyTo: data.email,
+      subject: `Portfolio Contact: ${data.subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333; border-bottom: 2px solid #06b6d4; padding-bottom: 10px;">
+            New Contact Form Submission
+          </h2>
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
+            <p><strong>Subject:</strong> ${data.subject}</p>
+            <p><strong>Message:</strong></p>
+            <p style="background: white; padding: 15px; border-left: 4px solid #06b6d4; margin-top: 10px;">
+              ${data.message.replace(/\n/g, "<br>")}
+            </p>
+          </div>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">
+            Timestamp: ${new Date().toLocaleString()}
+          </p>
+        </div>
+      `,
+      text: `
+New Contact Form Submission
+
+Name: ${data.name}
+Email: ${data.email}
+Subject: ${data.subject}
+
+Message:
+${data.message}
+
+Timestamp: ${new Date().toLocaleString()}
+      `,
+    });
+
+    if (error) {
+      console.error("Resend API error:", error);
+      return { success: false, error: error.message };
+    }
+
+    console.log("✅ Email sent successfully via Resend:", emailData?.id);
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Failed to send email:", errorMessage);
+    return { success: false, error: errorMessage };
+  }
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {

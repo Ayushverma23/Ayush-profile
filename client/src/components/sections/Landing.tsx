@@ -214,7 +214,7 @@ export default function Landing() {
             }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            Explore the Portfolio of
+            Ayush Verma
           </motion.h1>
           <motion.h2
             className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
@@ -222,7 +222,7 @@ export default function Landing() {
             transition={{ duration: 5, repeat: Infinity }}
             style={{ backgroundSize: "200% 200%" }}
           >
-            Ayush Verma
+            Turning Concepts Into Code
           </motion.h2>
         </motion.div>
       </div>

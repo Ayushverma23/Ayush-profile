@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+import "dotenv/config";
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -50,20 +53,19 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (process.env.NODE_ENV !== "production") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
+  // Serve the app on the port specified by PORT environment variable, or default to 5000
   // this serves both the API and the client
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const port = Number(process.env.PORT) || 5000;
+  // Use localhost on Windows for better compatibility, 0.0.0.0 for Linux/Mac
+  const host = process.env.HOST || (process.platform === "win32" ? "localhost" : "0.0.0.0");
+  
+  server.listen(port, host, () => {
+    log(`serving on http://${host}:${port}`);
   });
 })();

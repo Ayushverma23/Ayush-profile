@@ -143,7 +143,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.title = "Ayush Verma - Portfolio";
+    document.title = "Ayush Verma";
   }, []);
 
   return (

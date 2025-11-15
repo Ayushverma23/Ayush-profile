@@ -62,12 +62,12 @@ export default function About() {
               About Me
             </h2>
             <p className="text-lg text-gray-300 mb-4 leading-relaxed">
-              Full-stack developer passionate about creating immersive web experiences
-              that push the boundaries of what's possible with modern web technologies.
+            A dedicated and results-driven Software Developer with strong proficiency in full-stack development and a growing expertise in Machine Learning.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              Specializing in <span className="text-cyan-400 font-semibold">3D web graphics</span>,
+              Specializing in <span className="text-cyan-400 font-semibold">Machine Learning</span>,
               {" "}<span className="text-purple-400 font-semibold">real-time interactions</span>, and
+              {" "}<span className="text-green-400 font-semibold">Automated Websites Development</span>, and
               {" "}<span className="text-pink-400 font-semibold">performance optimization</span>.
             </p>
 
@@ -77,7 +77,7 @@ export default function About() {
                 whileHover={{ scale: 1.05, borderColor: "rgba(6, 182, 212, 0.5)" }}
               >
                 <Code2 className="w-8 h-8 mx-auto mb-2 text-cyan-400" />
-                <div className="text-2xl font-bold text-cyan-400">5+</div>
+                <div className="text-2xl font-bold text-cyan-400">1+</div>
                 <div className="text-sm text-gray-400">Years Exp</div>
               </motion.div>
 
@@ -86,7 +86,7 @@ export default function About() {
                 whileHover={{ scale: 1.05, borderColor: "rgba(168, 85, 247, 0.5)" }}
               >
                 <Rocket className="w-8 h-8 mx-auto mb-2 text-purple-400" />
-                <div className="text-2xl font-bold text-purple-400">50+</div>
+                <div className="text-2xl font-bold text-purple-400">15+</div>
                 <div className="text-sm text-gray-400">Projects</div>
               </motion.div>
 

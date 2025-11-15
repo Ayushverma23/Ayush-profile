@@ -33,39 +33,44 @@ const projectsData: Project[] = [
     color: "#06b6d4",
     branch: { startX: 50, startY: 30, endX: 30, endY: 15, controlX: 40, controlY: 10 },
   },
+  
   {
     id: 2,
-    name: "Real-time Collaboration",
-    description: "WebSocket-based collaborative workspace platform",
-    features: ["Live cursor tracking", "Shared state", "Real-time updates"],
-    techStack: ["Node.js", "WebSocket", "Redis", "React"],
-    demoUrl: "#",
-    githubUrl: "#",
+    name: "Online Web Compiler",
+    description: "Browser-based compiler supporting multiple programming languages",
+    features: ["Real-time execution", "Multi-language support", "Sandboxed environment"],
+    techStack: ["Node.js", "Docker", "Monaco Editor", "Express", "CI/CD", "GitHub Actions", "Java", "Spring Boot", "REST APIs", "Microservices", "API Gateway"],
+    demoUrl: "https://github.com/Ayushverma23/Web-Compiler",
+    githubUrl: "https://github.com/Ayushverma23/Web-Compiler",
     color: "#8b5cf6",
     branch: { startX: 50, startY: 30, endX: 70, endY: 15, controlX: 60, controlY: 10 },
   },
+  
   {
     id: 3,
-    name: "AI Assistant",
-    description: "Smart chatbot with natural language processing",
-    features: ["GPT integration", "Context awareness", "Multi-modal support"],
-    techStack: ["Python", "OpenAI", "FastAPI", "React"],
-    demoUrl: "#",
-    githubUrl: "#",
+    name: "AI Disease Outbreak Prediction",
+    description: "Machine learning system to forecast potential disease spread trends",
+    features: ["Time-series prediction", "Heatmap visualization", "Automated data ingestion"],
+    techStack: ["Python", "XGBoost", "FastAPI","LLM" , "MLflow" , "OpenAI" , "Automated Notification System" , "Power BI"],
+    demoUrl: "https://github.com/Ayushverma23/ai-disease-outbreak",
+    githubUrl: "https://github.com/Ayushverma23/ai-disease-outbreak",
     color: "#db2777",
     branch: { startX: 50, startY: 30, endX: 20, endY: 40, controlX: 30, controlY: 40 },
   },
+  
   {
     id: 4,
-    name: "E-commerce Platform",
-    description: "Full-featured online marketplace with payment integration",
-    features: ["Stripe payments", "Inventory management", "Analytics dashboard"],
-    techStack: ["Next.js", "Stripe", "PostgreSQL", "Prisma"],
-    demoUrl: "#",
-    githubUrl: "#",
+    name: "SnapLit – AI Image Editor",
+    description: "Full-stack AI-powered image editor for background removal and enhancements",
+    features: ["AI background removal", "Image filters", "Drag-and-drop editing"],
+    techStack: ["Next.js", "Python", "OpenCV", "Tailwind","AutoML", "Api Integration"],
+    demoUrl: "https://snaplit-akash.vercel.app/",
+    githubUrl: "https://github.com/akashverma92/Snaplit",
     color: "#f59e0b",
     branch: { startX: 50, startY: 30, endX: 80, endY: 40, controlX: 70, controlY: 40 },
   },
+  
+  
 ];
 
 export default function Projects() {
