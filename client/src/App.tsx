@@ -1,13 +1,14 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, lazy } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "@fontsource/inter";
 
-import Landing from "./components/sections/Landing";
-import About from "./components/sections/About";
-import Education from "./components/sections/Education";
-import Projects from "./components/sections/Projects";
-import Skills from "./components/sections/Skills";
-import Contact from "./components/sections/Contact";
+// Lazy load sections for better performance
+const Landing = lazy(() => import("./components/sections/Landing"));
+const About = lazy(() => import("./components/sections/About"));
+const Education = lazy(() => import("./components/sections/Education"));
+const Projects = lazy(() => import("./components/sections/Projects"));
+const Skills = lazy(() => import("./components/sections/Skills"));
+const Contact = lazy(() => import("./components/sections/Contact"));
 
 function LoadingScreen() {
   return (
@@ -39,21 +40,31 @@ function NavigationDots() {
   const [activeSection, setActiveSection] = useState(0);
 
   useEffect(() => {
+    // Throttle scroll events for better performance
+    let ticking = false;
+    
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-      
-      sections.forEach((section, index) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(index);
-          }
-        }
-      });
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollPosition = window.scrollY + window.innerHeight / 2;
+          
+          sections.forEach((section, index) => {
+            const element = document.getElementById(section);
+            if (element) {
+              const { offsetTop, offsetHeight } = element;
+              if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                setActiveSection(index);
+              }
+            }
+          });
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     
     return () => window.removeEventListener("scroll", handleScroll);
@@ -97,13 +108,22 @@ function ScrollIndicator() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    // Throttle scroll events for better performance
+    let ticking = false;
+    
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = (window.scrollY / totalHeight) * 100;
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     
     return () => window.removeEventListener("scroll", handleScroll);
@@ -135,9 +155,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Reduce loading time for better UX
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, []);
@@ -157,7 +178,7 @@ function App() {
           <ScrollIndicator />
           <NavigationDots />
           
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="h-screen bg-gray-900" />}>
             <Landing />
             <About />
             <Education />

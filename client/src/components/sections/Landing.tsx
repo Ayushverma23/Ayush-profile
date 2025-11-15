@@ -4,7 +4,7 @@ import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import { motion } from "framer-motion";
 import * as THREE from "three";
 
-function Starfield({ count = 2000, layer = 1 }) {
+function Starfield({ count = 1000, layer = 1 }) {
   const points = useRef<THREE.Points>(null);
   
   const positions = useMemo(() => {
@@ -164,9 +164,9 @@ function SolarSystem() {
       <OrbitRing radius={11} />
       <Planet radius={11} orbitRadius={11} speed={0.1} size={0.5} color="#f59e0b" offset={4} />
 
-      <Starfield count={800} layer={1} />
-      <Starfield count={600} layer={2} />
-      <Starfield count={400} layer={3} />
+      <Starfield count={500} layer={1} />
+      <Starfield count={300} layer={2} />
+      <Starfield count={200} layer={3} />
 
       <EffectComposer>
         <Bloom intensity={1.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} />
@@ -184,7 +184,15 @@ export default function Landing() {
       <div className="absolute inset-0">
         <Canvas
           camera={{ position: [0, 8, 15], fov: 50 }}
-          gl={{ antialias: true, alpha: false }}
+          gl={{ 
+            antialias: true, 
+            alpha: false,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: true
+          }}
+          performance={{ min: 0.5 }}
+          dpr={[1, 2]}
         >
           <color attach="background" args={["#0a0a1a"]} />
           <SolarSystem />
