@@ -33,3 +33,4 @@ vite.config.ts.*
 *.tar.gz
 .local
 .replit
+DEPLOYMENT_CHECKLIST.md
